@@ -1,5 +1,8 @@
 #include<iostream>
 using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 int** allocate(const unsigned int rows, const unsigned int cols);
 void clear(int** arr, const unsigned int rows);
@@ -11,12 +14,16 @@ void Print(int** arr, const unsigned int rows, const unsigned int cols);
 
 int* push_back(int arr[], int& n, int value);
 int* push_front(int arr[], int& n, int value);
-int* pop_back(int arr[], int& n);
 
-int* push_front(int arr[], int& n, int value);
+//int* push_front(int arr[], int& n, int value);
+int* pop_back(int arr[], int& n);
 int* pop_front(int arr[], int& n);
 
+int* insert(int arr[], int& n, int value, int push_index);
+int* erase(int arr[], int& n, int pop_index);
+
 void push_col_back(int** arr, const unsigned int rows, unsigned int& cols);
+void push_col_front(int** arr, const unsigned int rows, unsigned int& cols);
 ///// <summary>
 ///// ??? allocate(???);		//Создает двумерный динамический массив		DONE
 //? ? ? clear(? ? ? );			//Удаляет двумерный динамический массив		DONE
@@ -28,11 +35,14 @@ void push_col_back(int** arr, const unsigned int rows, unsigned int& cols);
 //? ? ? erase_row(? ? ? );			//Удаляет строку из массива по указанному индексу ???
 ///// </summary>
 
+#define DYNAMIC_MEMORY_1
+//#define DYNAMIC_MEMORY_2
 
 void main()
 {
 	setlocale(LC_ALL, "ru");
 
+#ifdef DYNAMIC_MEMORY_1
 	int n;
 	cout << "Введите размер массива: "; cin >> n;
 	int* arr = new int[n];
@@ -53,7 +63,48 @@ void main()
 	cout << "Массив с добавленным в начало элементом: " << endl;
 	Print(arr, n);
 
+	int push_index;
+	cout << "\n" << "Введите значение которое нужно добавить в массив: "; cin >> value;
+	cout << "\n" << "Введите индекс позицию добавляемого элемента (нумерация элементов начинается с \"0\"): "; cin >> push_index;
+	cout << "\n" << "Измененный массив массив:" << endl;
+	arr = insert(arr, n, value, push_index);
+	Print(arr, n);
+
+	int pop_index;
+	cout << "\n" << "Введите позицию удаляемого элемента (нумерация элементов начинается с \"0\"): "; cin >> pop_index;
+	arr = erase(arr, n, pop_index);
+	Print(arr, n);
+
+	delete[]arr;
+#endif // DYNAMIC_MEMORY_1
+
+#ifdef DYNAMIC_MEMORY_2
+	unsigned int rows, cols;
+	cout << "Введите размер массива: " << endl;
+	cin >> rows >> cols;
+	//1)Объявляем указатель на указатель, и сохраняем в него адрес массива указателей:
+	int** arr = new int* [rows];
+	//https://github.com/okovtun/BV_122/blob/e9af64b53a157a7f3bd315c2c9de4176e4f3752d/DynamicMemory/DynamicMemory/main.cpp#L78
+	for (int i = 0; i < rows; i++)
+	{
+		arr[i] = new int[cols] {};
+	}
+
+	FillRand(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	push_col_front(arr, rows, cols);
+	push_col_back(arr, rows, cols);
+	cout << "Массив с добавленным в начало элементом: " << endl;
+	Print(arr, rows, cols);
 	/*cout;*/
+	for (int i = 0; i < rows; i++)
+	{
+		delete[]arr[i];
+	}
+	delete[]arr;
+#endif // DYNAMIC_MEMORY_2
+
 }
 
 int** allocate(const unsigned int rows, const unsigned int cols)
@@ -180,6 +231,40 @@ int* pop_front(int arr[], int& n)
 	return arr;
 }
 
+int* insert(int arr[], int& n, int value, int push_index)
+{
+	int* buffer = new int[n + 1];
+	for (int i = 0; i < push_index; i++)
+	{
+		buffer[i] = arr[i];
+	}
+	for (int i = push_index + 1; i < n + 1; i++)
+	{
+		buffer[i] = arr[i - 1];
+	}
+	delete[] arr;
+	arr = buffer;
+	arr[push_index] = value;
+	n++;
+	return arr;
+}
+int* erase(int arr[], int& n, int pop_index)
+{
+	int* buffer = new int[--n];
+	for (int i = 0; i < pop_index; i++)
+	{
+		buffer[i] = arr[i];
+	}
+	for (int i = pop_index; i < n; i++)
+	{
+		buffer[i] = arr[i + 1];
+	}
+	delete[] arr;
+	arr = buffer;
+	return arr;
+}
+
+
 void push_col_back(int** arr, const unsigned int rows, unsigned int& cols)
 {
 	for (int i = 0; i < rows; i++)
@@ -190,6 +275,26 @@ void push_col_back(int** arr, const unsigned int rows, unsigned int& cols)
 		for (int j = 0; j < cols; j++)
 		{
 			buffer[j] = arr[i][j];
+		}
+		//3)Удаляем исходную строку
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	//4) После того, как в каждоый строке добавилось по элементу
+	//   Количество столбцов увеличилось на 1
+	cols++;
+}
+
+void push_col_front(int** arr, const unsigned int rows, unsigned int& cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		//1) Создаем буферную строку, размером на 1 элемент больше;
+		int* buffer = new int[cols + 1]{};
+		//2)Копируем исходную строку в буферную;
+		for (int j = 0; j < cols; j++)
+		{
+			buffer[j+1] = arr[i][j];
 		}
 		//3)Удаляем исходную строку
 		delete[] arr[i];
