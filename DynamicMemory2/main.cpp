@@ -24,24 +24,34 @@ void main()
 	int* arr = new int[n];
 	FillRand(arr, n);
 	Print(arr, n);
+	cout << endl;
+
 	int value;
 	cout << "Введите добавляемое в конец значение: "; cin >> value;
 	push_back(arr, n, value);
+	cout << endl;
+
 	cout << "Массив с добавленным в конце элементом: " << endl;
 	Print(arr, n);
+	cout << endl;
 
 	cout << "Введите добавляемое в начало значение: "; cin >> value;
 	push_front(arr, n, value);
+	cout << endl;
+
 	cout << "Массив с добавленным в начало элементом: " << endl;
 	Print(arr, n);
+	cout << endl;
 
 	pop_back(arr, n);
 	cout << "Массив с удаленным последним элементом массива: " << endl;
 	Print(arr, n);
+	cout << endl;
 
 	pop_front(arr, n);
 	cout << "Массив с удаленным первым элементом массива: " << endl;
 	Print(arr, n);
+	cout << endl;
 
 	int index;
 	cout << "Введите добавляемое значение: "; cin >> value;
@@ -49,10 +59,12 @@ void main()
 	push_insert(arr, n, value, index);
 	cout << "Массив с добавленным по номеру индекса значением: " << endl;
 	Print(arr, n);
+	cout << endl;
 
 	cout << "Введите индекс для удаляемого значения: "; cin >> index;
 	erase(arr, n, index);
 	Print(arr, n);
+	cout << endl;
 
 	delete[]arr;
 }
@@ -139,7 +151,6 @@ int push_insert(int*& arr, int& n, int value, int index)
 	arr = buffer;
 	arr[index] = value;
 	n++;
-	return *arr;
 }
 int erase(int*& arr, int& n, int index)
 {
@@ -153,5 +164,4 @@ int erase(int*& arr, int& n, int index)
 	delete[]arr;
 	arr = buffer;
 	n--;
-	return *arr;
 }
