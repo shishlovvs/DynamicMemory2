@@ -17,7 +17,7 @@ int erase(int*& arr, int& n, int index);
 
 void main()
 {
-	setlocale(LC_ALL, "Russian");
+	setlocale(LC_ALL, "ru");
 	int n;
 	cout << "Введите размер массива: "; cin >> n;
 	int* arr = new int[n];
