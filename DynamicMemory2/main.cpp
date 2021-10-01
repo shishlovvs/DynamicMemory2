@@ -25,14 +25,14 @@ int* erase(int arr[], int& n, int pop_index);
 void push_col_back(int** arr, const unsigned int rows, unsigned int& cols);
 void push_col_front(int** arr, const unsigned int rows, unsigned int& cols);
 ///// <summary>
-///// ??? allocate(???);		//Создает двумерный динамический массив		DONE
-//? ? ? clear(? ? ? );			//Удаляет двумерный динамический массив		DONE
-//? ? ? push_row_back(? ? ? );		//Добавляет строку в конец массива		DONE
-//? ? ? push_row_front(? ? ? );	//Добавляет строку в начало массива			DONE
-//? ? ? insert_row(? ? ? );		//Добвляет строку в массив по указанному индексу ???
-//? ? ? pop_row_back(? ? ? );		//Удаляет строку с конца массива		DONE
-//? ? ? pop_row_front(? ? ? );		//Удаляет строку с начала массива		???
-//? ? ? erase_row(? ? ? );			//Удаляет строку из массива по указанному индексу ???
+///// ??? allocate(???);			//Создает двумерный динамический массив				DONE
+//? ? ? clear(? ? ? );				//Удаляет двумерный динамический массив				DONE
+//? ? ? push_row_back(? ? ? );		//Добавляет строку в конец массива					DONE
+//? ? ? push_row_front(? ? ? );		//Добавляет строку в начало массива					DONE
+//? ? ? pop_row_back(? ? ? );		//Удаляет строку с конца массива					DONE
+//? ? ? pop_row_front(? ? ? );		//Удаляет строку с начала массива					DONE
+//? ? ? erase_row(? ? ? );			//Удаляет строку из массива по указанному индексу	DONE
+// //? ? ? insert_row(? ? ? );		//Добвляет строку в массив по указанному индексу	DONE
 ///// </summary>
 
 #define DYNAMIC_MEMORY_1
