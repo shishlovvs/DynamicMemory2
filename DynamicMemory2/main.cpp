@@ -24,6 +24,13 @@ int* erase(int arr[], int& n, int pop_index);
 
 void push_col_back(int** arr, const unsigned int rows, unsigned int& cols);
 void push_col_front(int** arr, const unsigned int rows, unsigned int& cols);
+
+
+void pop_col_back(int** arr, const unsigned int rows, unsigned int& cols);
+void pop_col_front(int** arr, const unsigned int rows, unsigned int& cols);
+
+void insert_col(int** arr, const unsigned int rows, unsigned int& cols, unsigned int insert_index);
+void erase_col(int** arr, const unsigned int rows, unsigned int& cols, unsigned int pop_index);
 ///// <summary>
 ///// ??? allocate(???);			//Создает двумерный динамический массив				DONE
 //? ? ? clear(? ? ? );				//Удаляет двумерный динамический массив				DONE
@@ -33,10 +40,17 @@ void push_col_front(int** arr, const unsigned int rows, unsigned int& cols);
 //? ? ? pop_row_front(? ? ? );		//Удаляет строку с начала массива					DONE
 //? ? ? erase_row(? ? ? );			//Удаляет строку из массива по указанному индексу	DONE
 // //? ? ? insert_row(? ? ? );		//Добвляет строку в массив по указанному индексу	DONE
+// 
+// ??? push_col_back(???);			//Добавляет столбец в конец массива					DONE
+//? ? ? push_col_front(? ? ? );		//Добавляет столбец в начало массива				DONE
+//? ? ? insert_col(? ? ? );			//Добвляет столбец в массив по указанному индексу	DONE
+//? ? ? pop_col_back(? ? ? );		//Удаляет столбец с конеца массива					DONE
+//? ? ? pop_col_front(? ? ? );		//Удаляет столбец с начала массива					DONE
+//? ? ? erase_col(? ? ? );			//Удаляет столбец из массива по указанному индексу	DONE
 ///// </summary>
 
-#define DYNAMIC_MEMORY_1
-//#define DYNAMIC_MEMORY_2
+//#define DYNAMIC_MEMORY_1
+#define DYNAMIC_MEMORY_2
 
 void main()
 {
@@ -83,26 +97,41 @@ void main()
 	cout << "Введите размер массива: " << endl;
 	cin >> rows >> cols;
 	//1)Объявляем указатель на указатель, и сохраняем в него адрес массива указателей:
-	int** arr = new int* [rows];
-	//https://github.com/okovtun/BV_122/blob/e9af64b53a157a7f3bd315c2c9de4176e4f3752d/DynamicMemory/DynamicMemory/main.cpp#L78
-	for (int i = 0; i < rows; i++)
-	{
-		arr[i] = new int[cols] {};
-	}
-
+	int** arr = allocate(rows, cols);
+	/////////////////////////////////////////////////////////////////////////////
+	////////  Обращение к элементам двумерного динамического массива:    ////////
+	/////////////////////////////////////////////////////////////////////////////
+	cout << "Вывод исходного массива: " << endl;
 	FillRand(arr, rows, cols);
 	Print(arr, rows, cols);
-
-	push_col_front(arr, rows, cols);
+	//https://github.com/okovtun/BV_122/blob/e9af64b53a157a7f3bd315c2c9de4176e4f3752d/DynamicMemory/DynamicMemory/main.cpp#L78
+	
+	cout << "Добавление столбца в конец массива: " << endl;
 	push_col_back(arr, rows, cols);
-	cout << "Массив с добавленным в начало элементом: " << endl;
 	Print(arr, rows, cols);
-	/*cout;*/
-	for (int i = 0; i < rows; i++)
-	{
-		delete[]arr[i];
-	}
-	delete[]arr;
+
+	cout << "Добавление столбца в начало массива: " << endl;
+	push_col_front(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	unsigned int insert_index;
+	cout << "Введите индекс по которому хотите вставить столбец в массив: "; cin >> insert_index;
+	insert_col(arr, rows, cols, insert_index);
+	Print(arr, rows, cols);
+
+	cout << "Удаление столбца в конце массива: " << endl;
+	pop_col_back(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	cout << "Удаление столбца в начале массива: " << endl;
+	pop_col_front(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	unsigned int pop_index;
+	cout << "Введите индекс по которому хотите удалить столбец из массива: "; cin >> pop_index;
+	erase_col(arr, rows, cols, pop_index);
+	Print(arr, rows, cols);
+	clear(arr, rows);
 #endif // DYNAMIC_MEMORY_2
 
 }
@@ -269,38 +298,96 @@ void push_col_back(int** arr, const unsigned int rows, unsigned int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		//1) Создаем буферную строку, размером на 1 элемент больше;
+		//1) Создаём буфферную строку, размером на 1 элемент больше:
 		int* buffer = new int[cols + 1]{};
-		//2)Копируем исходную строку в буферную;
+		//2) Копируем исходную строку в буфферную:
 		for (int j = 0; j < cols; j++)
 		{
 			buffer[j] = arr[i][j];
 		}
-		//3)Удаляем исходную строку
+		//3) Удаляем исходную строку
 		delete[] arr[i];
 		arr[i] = buffer;
 	}
-	//4) После того, как в каждоый строке добавилось по элементу
-	//   Количество столбцов увеличилось на 1
+	//4) После того, как в каждой строке добавилось по элементу, 
+	//количество стобцов увеличилось на 1:
 	cols++;
 }
-
 void push_col_front(int** arr, const unsigned int rows, unsigned int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		//1) Создаем буферную строку, размером на 1 элемент больше;
 		int* buffer = new int[cols + 1]{};
-		//2)Копируем исходную строку в буферную;
 		for (int j = 0; j < cols; j++)
 		{
-			buffer[j+1] = arr[i][j];
+			buffer[j + 1] = arr[i][j];
 		}
-		//3)Удаляем исходную строку
 		delete[] arr[i];
 		arr[i] = buffer;
 	}
-	//4) После того, как в каждоый строке добавилось по элементу
-	//   Количество столбцов увеличилось на 1
 	cols++;
+}
+void insert_col(int** arr, const unsigned int rows, unsigned int& cols, unsigned int insert_index)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		int* buffer = new int[cols + 1]{};
+		for (int j = 0; j < insert_index; j++)
+		{
+			buffer[j] = arr[i][j];
+		}
+		for (int j = insert_index + 1; j < cols + 1; j++)
+		{
+			buffer[j] = arr[i][j - 1];
+		}
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	cols++;
+}
+void pop_col_back(int** arr, const unsigned int rows, unsigned int& cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		int* buffer = new int[cols - 1]{};
+		for (int j = 0; j < cols - 1; j++)
+		{
+			buffer[j] = arr[i][j];
+		}
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	--cols;
+}
+void pop_col_front(int** arr, const unsigned int rows, unsigned int& cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		int* buffer = new int[cols - 1]{};
+		for (int j = 0; j < cols - 1; j++)
+		{
+			buffer[j] = arr[i][j + 1];
+		}
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	--cols;
+}
+void erase_col(int** arr, const unsigned int rows, unsigned int& cols, unsigned int pop_index)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		int* buffer = new int[cols - 1];
+		for (int j = 0; j < pop_index; j++)
+		{
+			buffer[j] = arr[i][j];
+		}
+		for (int j = pop_index; j < cols - 1; j++)
+		{
+			buffer[j] = arr[i][j + 1];
+		}
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	--cols;
 }
